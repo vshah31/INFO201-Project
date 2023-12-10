@@ -1,0 +1,207 @@
+### Veer's Part
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+dataframe1 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows <- c(41,252)
+df_selected <- dataframe1[desired_rows, ]
+df_selected
+
+
+dataframe2 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData2.csv")
+desired_rows2 <- c(41,251)
+df_selected2 <- dataframe2[desired_rows2, ]
+df_selected2
+
+
+merged_dataset <- merge(df_selected, df_selected2)
+
+column_name <-"IncomeLevel"
+merged_dataset <- merged_dataset %>%
+  mutate(!!column_name := c(2, 3))
+write.csv(merged_dataset, file = csv_file_path, row.names = FALSE)
+
+selected_columns <- merged_dataset %>%
+  select("1960":"2021", Country)
+
+Year <- unlist(selected_columns)
+
+merged_dataset_long <- selected_columns %>%
+  pivot_longer(cols = -Country,
+               names_to = "Year",
+               values_to = "BirthRate")
+
+merged_dataset_long
+
+ggplot(merged_dataset_long, aes(x = Year, y = BirthRate, color = Country)) +
+  geom_point() +
+  geom_line(aes(group = Country), size = 2, linetype = "solid") +
+  labs(title = "Scatterplot of Birthrate Compared to Income of China and USA",
+       x = "Year",
+       y = "Birthrate (per 1,000 people)") +
+  scale_x_discrete(breaks = seq(1960, 2021, by = 10))
+```
+### Arvin's Part
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(magick)
+library(broom)
+library(readr)
+library(tidyr)
+dataframe1 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows <- c(41,252)
+df_selected <- dataframe1[desired_rows, ]
+df_selected
+
+dataframe2 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows2 <- c(41,251)
+df_selected2 <- dataframe2[desired_rows2, ]
+df_selected2
+
+merged_dataset <- merge(df_selected, df_selected2)
+
+
+csv_file_path <- ("/users/veershah/Downloads/INFO 201/merged_dataset3.csv")
+write.csv(merged_dataset, file = csv_file_path, row.names = FALSE)
+
+colnames(merged_dataset)
+
+selected_columns <- merged_dataset %>%
+  select("1960":"2021", Country)
+
+# Now selected_columns is a data frame containing only the specified columns
+
+# If you want to convert the selected columns into a vector
+Year <- unlist(selected_columns)
+
+merged_dataset_long <- selected_columns %>%
+  pivot_longer(cols = -Country, 
+               names_to = "Year", 
+               values_to = "Value")
+
+ggplot(merged_dataset_long, aes(x = Year, y = Value, color = Country)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Scatterplot of Birthrate compared to Years",
+       x = "Year",
+       y = "Birthrate (per 1,000 people)") +
+  scale_x_discrete(breaks = seq(1960, 2021, by = 10))
+```
+### Salomi's Part
+```{r}
+library(tidyverse)
+
+
+dataframe1 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows <- c(41,252)
+df_selected <- dataframe1[desired_rows, ]
+df_selected
+
+dataframe2 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows2 <- c(41,251)
+df_selected2 <- dataframe2[desired_rows2, ]
+df_selected2
+
+merged_dataset <- merge(df_selected, df_selected2)
+
+
+csv_file_path <- ("merged_dataset3.csv")
+write.csv(merged_dataset, file = csv_file_path, row.names = FALSE)
+
+merged_dataset_long <- selected_columns %>%
+  pivot_longer(cols = -Country,
+               names_to = "Year",
+               values_to = "Value")
+merged_dataset
+
+China1 <- merged_dataset_long %>%
+  filter(Country == "China")
+China1
+
+USAdata <- merged_dataset_long %>%
+  filter(Country == "United States")
+USAdata
+
+combined_data <- rbind(China1, USAdata)
+combined_data
+
+scatterplot_combined <- ggplot(data = combined_data, aes(x = Year, y = Value, color = Country)) +
+  geom_point(size = 3) +
+  geom_line(aes(group = Country), size = 1, linetype = "solid") +
+  scale_x_discrete(breaks = seq(1960, 2021, by = 10))  +
+  xlab("Year") +
+  ylab("Birthrate") +
+  ggtitle("Scatterplot for China and USA Over Time") +
+  theme_minimal()
+scatterplot_combined
+```
+#Arwa's Part
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(magick)
+library(broom)
+library(readr)
+library(tidyr)
+
+dataframe1 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows <- c(41,252)
+df_selected <- dataframe1[desired_rows, ]
+df_selected
+
+dataframe2 <- read_delim("/users/veershah/Downloads/INFO 201/CountryData.csv")
+desired_rows2 <- c(41,251)
+df_selected2 <- dataframe2[desired_rows2, ]
+df_selected2
+
+merged_dataset <- merge(df_selected, df_selected2)
+
+
+csv_file_path <-("/users/veershah/Downloads/INFO 201/merged_dataset3.csv")
+write.csv(merged_dataset, file = csv_file_path, row.names = FALSE)
+
+colnames(merged_dataset)
+
+selected_columns <- merged_dataset %>%
+  select("1960":"2021", Country)
+
+# Now selected_columns is a data frame containing only the specified columns
+
+# If you want to convert the selected columns into a vector
+Year <- unlist(selected_columns)
+
+merged_dataset_long <- selected_columns %>%
+  pivot_longer(cols = -Country, 
+               names_to = "Year", 
+               values_to = "Value")
+
+China <- merged_dataset_long %>% 
+  filter(Country == "China")
+
+
+Create_China_Plot <- ggplot(data = China) +
+  geom_col(mapping = aes(x = Year, y = Value))+
+  scale_x_discrete(breaks = seq(1960, 2021, by = 10)) +
+  xlab("Year")+
+  ylab("Income Rate")+
+  ggtitle("Chinas Income rate")
+  
+
+Create_China_Plot
+
+USA <- merged_dataset_long %>% 
+  filter(Country == "United States")
+
+
+Create_USA_Plot <- ggplot(data = USA) +
+  geom_col(mapping = aes(x = Year, y = Value))+
+  scale_x_discrete(breaks = seq(1960, 2021, by = 10))  +
+   xlab("Year")+
+  ylab("Income Rate")+
+  ggtitle("USA Income rate")
+
+```
